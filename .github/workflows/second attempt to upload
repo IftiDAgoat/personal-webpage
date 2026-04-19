@@ -1,43 +1,1105 @@
-# Simple workflow for deploying static content to GitHub Pages
-name: Deploy static content to Pages
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iftikhar Ali Hussaini</title>
+    <style>
+      /* --- Reset & Global --- */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: ["main"]
+      :root {
+        --white-bg: #ffffff;
+        --blue: #0056b3;
+        --primary-text: #222222;
+        --paragraph-color: #555555;
+        --heading-font: "Lora", serif;
+        --body-font: "Montserrat", sans-serif;
+        --container-width: 1140px;
+        --accent-red: #dc3545;
+      }
+      html,
+      body {
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--white-bg);
+        color: var(--primary-text);
+        font-family: var(--body-font);
+      }
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+      .container {
+        width: 100%;
+        max-width: var(--container-width);
+        margin: 0 auto;
+        padding: 0 20px;
+      }
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+      p {
+        font-weight: 300;
+        margin-bottom: 1rem;
+      }
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+      /* --------------------------- Topbar ------------------------------ */
+      .topbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background-color: #0056b3;
+        color: #fff;
+        font-size: 0.9rem;
+        z-index: 1050;
+        backdrop-filter: blur(4px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        padding: 12px 0;
+        transition: transform 0.4s ease;
+      }
 
-jobs:
-  # Single deploy job since we're just deploying
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # Upload entire repository
-          path: '.'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
+      .topbar-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .topbar-contact {
+        display: flex;
+        gap: 20px;
+      }
+
+      .topbar.hidden {
+        transform: translateY(-100%);
+      }
+
+      /* -------------------------------- Navbar --------------------------------- */
+      .navbar {
+        position: sticky;
+        top: 40.5px;
+        width: 100%;
+        background-color: #ffffff;
+        padding: 1.5rem 0;
+        transition: all 0.4s ease-in-out;
+        z-index: 1060;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .navbar.scrolled {
+        background-color: rgba(255, 255, 255, 0.9) !important;
+        backdrop-filter: blur(5px);
+        padding: 1rem 0;
+      }
+
+      .topbar.hidden + .navbar {
+        top: 0;
+      }
+
+      .navbar .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .navbar-brand {
+        font-family: var(--heading-font);
+        font-weight: 600;
+        font-size: 1.5rem;
+        color: var(--blue);
+        text-decoration: none;
+      }
+
+      .nav-menu {
+        display: flex;
+        list-style: none;
+        gap: 25px;
+      }
+
+      .nav-link {
+        color: #555555;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .nav-link:hover,
+      .nav-link.active {
+        color: var(--accent-red);
+      }
+      .nav-link.active {
+        font-weight: 600;
+      }
+
+      .navbar-toggler {
+        display: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        width: 30px;
+        height: 22px;
+        position: relative;
+      }
+
+      .hamburger-icon span {
+        display: block;
+        position: absolute;
+        height: 3px;
+        width: 100%;
+        background: var(--primary-text);
+        border-radius: 3px;
+        transition: 0.25s ease-in-out;
+      }
+
+      .hamburger-icon span:nth-child(1) {
+        top: 0;
+      }
+      .hamburger-icon span:nth-child(2) {
+        top: 9px;
+      }
+      .hamburger-icon span:nth-child(3) {
+        top: 18px;
+      }
+      .section {
+        padding: 80px 0;
+      }
+
+      @media (max-width: 768px) {
+        .topbar {
+          display: none;
+        }
+        .navbar {
+          top: 0;
+        }
+
+        .navbar-toggler {
+          display: block;
+        }
+
+        .nav-menu {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          width: 100%;
+          background: #ffffff;
+          flex-direction: column;
+          text-align: center;
+          gap: 0;
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.4s ease-out;
+        }
+
+        .nav-menu.open {
+          max-height: 300px;
+          border-bottom: 1px solid #ddd;
+        }
+
+        .nav-menu li {
+          padding: 15px 0;
+          border-top: 1px solid #eee;
+        }
+        .navbar-toggler.active span:nth-child(1) {
+          transform: translateY(9px) rotate(135deg);
+        }
+        .navbar-toggler.active span:nth-child(2) {
+          opacity: 0;
+        }
+        .navbar-toggler.active span:nth-child(3) {
+          transform: translateY(-9px) rotate(-135deg);
+        }
+      }
+
+      /* -------------------------------- Hero Section --------------------------------- */
+      #hero {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+        padding-top: 60px;
+      }
+
+      .profile-container {
+        margin-bottom: 25px;
+      }
+
+      .profile-img {
+        width: 180px;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid var(--blue);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .hero-name {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+
+      .hero-subtitle {
+        font-size: 1.1rem;
+        color: var(--blue);
+        letter-spacing: 1px;
+        margin-bottom: 50px;
+        text-transform: uppercase;
+      }
+      .scroll-link {
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 40px;
+        transition: opacity 0.3s;
+      }
+
+      .scroll-link:hover {
+        opacity: 0.7;
+      }
+
+      .scroll-down {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .mouse {
+        width: 26px;
+        height: 42px;
+        border: 2px solid var(--primary-text);
+        border-radius: 20px;
+        position: relative;
+        margin-bottom: 5px;
+      }
+
+      .wheel {
+        width: 4px;
+        height: 8px;
+        background: var(--accent-red);
+        position: absolute;
+        top: 6px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 2px;
+        animation: scroll-wheel 1.6s infinite;
+      }
+
+      .arrow span {
+        display: block;
+        width: 12px;
+        height: 12px;
+        border-bottom: 2px solid var(--primary-text);
+        border-right: 2px solid var(--primary-text);
+        transform: rotate(45deg);
+        margin: -6px;
+        animation: arrow-down 1.6s infinite;
+      }
+
+      .arrow span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      @keyframes scroll-wheel {
+        0% {
+          opacity: 0;
+          transform: translate(-50%, 0);
+        }
+        30% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+          transform: translate(-50%, 18px);
+        }
+      }
+
+      @keyframes arrow-down {
+        0% {
+          opacity: 0;
+          transform: rotate(45deg) translate(-5px, -5px);
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+          transform: rotate(45deg) translate(5px, 5px);
+        }
+      }
+
+      /* ---------------------------------- About Section -------------------------- */
+      #about {
+        padding: 26px 5px;
+        background-color: var(--white-bg);
+        text-align: left;
+      }
+
+      .about-flex {
+        display: flex;
+        align-items: center;
+        gap: 80px;
+        flex-wrap: wrap;
+      }
+
+      .about-image-wrapper {
+        flex: 1;
+        min-width: 300px;
+        position: relative;
+        display: flex;
+        justify-content: center;
+      }
+
+      .image-frame {
+        position: relative;
+        z-index: 1;
+      }
+
+      .image-frame::before {
+        content: "";
+        position: absolute;
+        top: -40px;
+        left: -40px;
+        width: 80%;
+        height: 80%;
+        border: 7px solid var(--accent-red);
+        z-index: -1;
+      }
+
+      .about-img {
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+        border-radius: 15px;
+        display: block;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      }
+
+      .about-content {
+        flex: 1.2;
+        min-width: 300px;
+      }
+
+      .about-title {
+        font-family: var(--heading-font);
+        font-size: 2.5rem;
+        color: var(--primary-text);
+        margin-bottom: 30px;
+        position: relative;
+      }
+
+      .about-text {
+        font-size: 1.05rem;
+        line-height: 1.8;
+        color: var(--paragraph-color);
+        margin-bottom: 20px;
+        font-weight: 300;
+      }
+
+      @media (max-width: 992px) {
+        .about-flex {
+          flex-direction: column;
+          gap: 60px;
+          text-align: center;
+        }
+
+        .image-frame::before {
+          top: -20px;
+          left: -20px;
+        }
+
+        .about-content {
+          text-align: left;
+        }
+      }
+
+      .mt-100 {
+        margin-top: 100px;
+      }
+
+      .section-title {
+        font-family: var(--heading-font);
+        font-size: 2.2rem;
+        color: var(--primary-text);
+        margin-bottom: 50px;
+        text-align: left;
+        border-left: 5px solid var(--blue);
+        padding-left: 20px;
+      }
+
+      .experience-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 30px;
+      }
+
+      .exp-card {
+        background: #f9f9f9;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        padding: 40px;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      }
+
+      .exp-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--blue);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+      }
+
+      .exp-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 20px;
+      }
+
+      .exp-header h3 {
+        font-size: 1.5rem;
+        color: var(--primary-text);
+      }
+
+      .location {
+        color: var(--blue);
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin-top: 10px;
+      }
+
+      .date-badge {
+        background: rgba(0, 0, 0, 0.05);
+        padding: 6px 15px;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        color: #555;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .job-role {
+        color: var(--primary-text);
+        font-size: 1.1rem;
+        margin-bottom: 20px;
+        font-weight: 600;
+      }
+
+      .exp-bullets {
+        list-style: none;
+        padding: 0;
+      }
+
+      .exp-bullets li {
+        position: relative;
+        padding-left: 25px;
+        margin-bottom: 12px;
+        color: var(--paragraph-color);
+        line-height: 1.7;
+        font-weight: 300;
+      }
+
+      .exp-bullets li::before {
+        content: "→";
+        position: absolute;
+        left: 0;
+        color: var(--accent-red);
+        font-weight: bold;
+      }
+
+      .border-accent {
+        border-top: 3px solid var(--blue);
+      }
+
+      .text-end {
+        text-align: right;
+      }
+
+      @media (max-width: 768px) {
+        .exp-header {
+          flex-direction: column;
+          gap: 10px;
+        }
+        .text-end {
+          text-align: left;
+        }
+        .exp-card {
+          padding: 25px;
+        }
+      }
+
+      .education-timeline {
+        position: relative;
+        max-width: 800px;
+        margin: 40px 0;
+        padding-left: 30px;
+      }
+
+      .education-timeline::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 2px;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.1);
+      }
+
+      .edu-item {
+        position: relative;
+        margin-bottom: 50px;
+      }
+
+      .edu-dot {
+        position: absolute;
+        left: -35px;
+        top: 5px;
+        width: 12px;
+        height: 12px;
+        background: var(--blue);
+        border-radius: 50%;
+        box-shadow: 0 0 10px var(--blue);
+      }
+
+      .edu-content {
+        background: rgba(0, 0, 0, 0.02);
+        padding: 25px;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+      }
+
+      .edu-content:hover {
+        background: rgba(0, 0, 0, 0.04);
+        border-color: var(--blue);
+        transform: translateX(10px);
+      }
+
+      .edu-date {
+        display: inline-block;
+        color: var(--accent-red);
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+
+      .edu-content h3 {
+        color: var(--primary-text);
+        font-size: 1.4rem;
+        margin-bottom: 5px;
+      }
+
+      .edu-degree {
+        color: #666;
+        font-size: 1rem;
+        font-weight: 300;
+      }
+
+      .edu-grades {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-top: 15px;
+      }
+
+      .edu-grades span {
+        background: rgba(0, 0, 0, 0.05);
+        padding: 5px 12px;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        color: #555;
+        border-bottom: 2px solid var(--blue);
+      }
+
+      .edu-grades strong {
+        color: var(--primary-text);
+        font-weight: 500;
+      }
+
+      @media (max-width: 768px) {
+        .education-timeline {
+          margin-left: 10px;
+        }
+        .edu-content h3 {
+          font-size: 1.2rem;
+        }
+      }
+
+      /* --------------------------------- Contact Section --------------------------------- */
+      #contact {
+        padding-bottom: 120px;
+      }
+
+      .contact-flex {
+        display: flex;
+        gap: 60px;
+        margin-top: 40px;
+        flex-wrap: wrap;
+      }
+
+      .contact-info {
+        flex: 1;
+        min-width: 300px;
+      }
+
+      .info-item {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 35px;
+        padding: 20px;
+        background: rgba(0, 0, 0, 0.02);
+        border-radius: 12px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      .info-icon {
+        font-size: 1.5rem;
+        width: 50px;
+        height: 50px;
+        background: rgba(0, 86, 179, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+      }
+
+      .info-item h4 {
+        color: var(--primary-text);
+        font-size: 1rem;
+        margin-bottom: 2px;
+      }
+
+      .info-item p {
+        color: #666;
+        margin: 0;
+        font-size: 0.95rem;
+      }
+      .contact-form-wrapper {
+        flex: 1.5;
+        min-width: 300px;
+      }
+
+      .contact-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        padding: 15px 20px;
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        color: var(--primary-text);
+        font-family: inherit;
+        font-size: 1rem;
+        outline: none;
+        transition: all 0.3s;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus {
+        border-color: var(--blue);
+        background: #ffffff;
+      }
+
+      .submit-btn {
+        background: var(--blue);
+        color: #fff;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          transform 0.3s,
+          background 0.3s;
+        align-self: flex-start;
+      }
+
+      .submit-btn:hover {
+        background: var(--accent-red);
+        transform: translateY(-3px);
+      }
+
+      .footer {
+        padding: 20px 0;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+        text-align: center;
+        color: #888;
+        font-size: 0.9rem;
+      }
+      @media (max-width: 768px) {
+        .contact-flex {
+          flex-direction: column;
+        }
+        .submit-btn {
+          width: 100%;
+        }
+      }
+
+      @media screen and (max-width: 767px) {
+        #hero {
+          height: 70vh;
+        }
+        .section {
+          padding: 40px 10px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="topbar">
+      <div class="container">
+        <div class="topbar-content">
+          <div class="topbar-text">07368505107</div>
+          <div class="topbar-contact">
+            <span>iftiali.2006@gmail.com</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="navbar">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">Iftikhar Ali</a>
+
+        <button class="navbar-toggler" id="menuToggle">
+          <div class="hamburger-icon">
+            <span></span><span></span><span></span>
+          </div>
+        </button>
+
+        <ul class="nav-menu" id="navMenu">
+          <li><a class="nav-link active" href="#hero">Home</a></li>
+          <li><a class="nav-link" href="#about">About</a></li>
+          <li><a class="nav-link" href="#experience">Experience</a></li>
+          <li><a class="nav-link" href="#education">Education</a></li>
+          <li><a class="nav-link" href="#contact">Contact</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <main>
+      <section id="hero" class="section">
+        <div class="container">
+          <div class="profile-container">
+            <img
+              src="./profile.jpg"
+              alt="Iftikhar Ali Hussaini"
+              class="profile-img"
+            />
+          </div>
+
+          <h1 class="hero-name">Iftikhar Ali Hussaini</h1>
+          <p class="hero-subtitle">
+            Accounting, Finance & Security Professional
+          </p>
+
+          <div class="scroll-down">
+            <div class="mouse">
+              <div class="wheel"></div>
+            </div>
+            <div class="arrow">
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" class="section">
+        <div class="container">
+          <div class="about-flex">
+            <div class="about-image-wrapper">
+              <div class="image-frame">
+                <img
+                  src="./profile.jpg"
+                  alt="About Iftikhar"
+                  class="about-img"
+                />
+              </div>
+            </div>
+
+            <div class="about-content">
+              <h2 class="about-title">About Me</h2>
+              <p class="about-text">
+                I’m an aspiring model passionate about using fashion and
+                photography as a canvas for storytelling. For me, modeling is
+                more than just posing, it is a story keeping record of every
+                moment of my life, like they say "catching moment". Life as a
+                journey is an embodiment of emotion, style, and character, so in
+                my way i want to captivates the viewer while portraying my
+                developing personality as I grow figure myself every step of the
+                way, according to God's divine leading.
+              </p>
+              <p class="about-text">
+                I enjoy experimenting with different looks, from high-fashion
+                concepts to natural lifestyle shoots, always bringing energy,
+                creativity, and adaptability to every project. Beyond the
+                camera, I’m committed to continuous growth, learning, and
+                collaborating with brands, photographers, and creatives who
+                share a vision for powerful imagery. My goal is to build a
+                career where each shoot inspires curiosity and leaves a lasting
+                impression. If my work resonates with you, I’d love to connect
+                and explore opportunities together.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="experience" class="section">
+        <div class="container">
+          <h2 class="section-title">Professional Experience</h2>
+
+          <div class="experience-grid">
+            <div class="exp-card">
+              <div class="exp-header">
+                <div>
+                  <h3>Gipsy Hill Federation</h3>
+                  <p class="location">London, UK</p>
+                </div>
+                <div class="text-end">
+                  <span class="date-badge">June 2025 - Aug 2025</span>
+                </div>
+              </div>
+              <h4 class="job-role">Assistant Accountant</h4>
+              <ul class="exp-bullets">
+                <li>
+                  Assisted with processing invoices and updating financial
+                  records, gaining hands-on exposure to day-to-day accounting
+                  tasks.
+                </li>
+                <li>
+                  Helped with basic reconciliations and filing, ensuring
+                  documents were accurate and organised for the rest of the
+                  finance team.
+                </li>
+                <li>
+                  Shadowed senior accountants to understand financial reporting
+                  processes and the importance of following procedures in an
+                  educational setting.
+                </li>
+              </ul>
+            </div>
+
+            <div class="exp-card">
+              <div class="exp-header">
+                <div>
+                  <h3>Diffusion Elite Security</h3>
+                  <p class="location">London, UK</p>
+                </div>
+                <div class="text-end">
+                  <span class="date-badge">Jan 2025 - Present</span>
+                </div>
+              </div>
+              <h4 class="job-role">Security Personal</h4>
+              <ul class="exp-bullets">
+                <li>
+                  Monitored large crowds and entry points, maintaining safety
+                  standards while paying close attention to detail in ID and
+                  ticket checks.
+                </li>
+                <li>
+                  Worked closely with team members and supervisors to manage
+                  security operations smoothly during high-pressure events.
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <h2 class="section-title mt-100">Leadership Experience</h2>
+
+          <div class="experience-grid">
+            <div class="exp-card border-accent">
+              <div class="exp-header">
+                <div>
+                  <h3>Bayes Business School</h3>
+                  <p class="location">London, UK</p>
+                </div>
+                <div class="text-end">
+                  <span class="date-badge">Sept 2025 - June 2025</span>
+                </div>
+              </div>
+              <ul class="exp-bullets mt-3">
+                <li>
+                  Conducted thorough research on guilds of the city of London
+                  with a team, acting as leader in charge of delegating roles
+                  and organising team meetings.
+                </li>
+                <li>
+                  Led team to pitch investment strategies for Rolls-Royce
+                  Holdings PLC, gathering precise financial data to create
+                  compelling professional presentations.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="education" class="section">
+        <div class="container">
+          <h2 class="section-title">Education</h2>
+
+          <div class="education-timeline">
+            <div class="edu-item">
+              <div class="edu-dot"></div>
+              <div class="edu-content">
+                <span class="edu-date">2024 – Present</span>
+                <h3>City University of London</h3>
+                <p class="edu-degree">Undergraduate Studies</p>
+              </div>
+            </div>
+
+            <div class="edu-item">
+              <div class="edu-dot"></div>
+              <div class="edu-content">
+                <span class="edu-date">2022 – 2024</span>
+                <h3>A-Levels</h3>
+                <div class="edu-grades">
+                  <span><strong>Mathematics:</strong> C</span>
+                  <span><strong>Sociology:</strong> C</span>
+                  <span><strong>Physical Education:</strong> C</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="edu-item">
+              <div class="edu-dot"></div>
+              <div class="edu-content">
+                <span class="edu-date">Completed 2022</span>
+                <h3>GCSEs</h3>
+                <div class="edu-grades">
+                  <span><strong>Mathematics:</strong> 8</span>
+                  <span><strong>English Literature:</strong> 8</span>
+                  <span><strong>English Language:</strong> 6</span>
+                  <span><strong>Science:</strong> 6-6</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="section">
+        <div class="container">
+          <h2 class="section-title">Get In Touch</h2>
+
+          <div class="contact-flex">
+            <div class="contact-info">
+              <div class="info-item">
+                <div class="info-icon">📍</div>
+                <div>
+                  <h4>Address</h4>
+                  <p>161 Long Elmes, London</p>
+                </div>
+              </div>
+
+              <div class="info-item">
+                <div class="info-icon">📞</div>
+                <div>
+                  <h4>Phone</h4>
+                  <p>07368505107</p>
+                </div>
+              </div>
+
+              <div class="info-item">
+                <div class="info-icon">✉️</div>
+                <div>
+                  <h4>Email</h4>
+                  <p>iftiali.2006@gmail.com</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="contact-form-wrapper">
+              <form class="contact-form">
+                <div class="form-group">
+                  <input type="text" placeholder="Your Name" required />
+                </div>
+                <div class="form-group">
+                  <input type="email" placeholder="Your Email" required />
+                </div>
+                <div class="form-group">
+                  <textarea
+                    placeholder="Your Message"
+                    rows="5"
+                    required
+                  ></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Send Message</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <div class="container">
+          <p>&copy; 2026 Iftikhar Ali Hussaini. All Rights Reserved.</p>
+        </div>
+      </footer>
+    </main>
+
+    <script>
+      const topbar = document.querySelector(".topbar");
+      const navbar = document.querySelector(".navbar");
+      const menuToggle = document.getElementById("menuToggle");
+      const navMenu = document.getElementById("navMenu");
+      const sections = document.querySelectorAll("section[id]");
+      const navLinks = document.querySelectorAll(".nav-link");
+
+      let lastScrollTop = 0;
+
+      menuToggle.addEventListener("click", () => {
+        navMenu.classList.toggle("open");
+        menuToggle.classList.toggle("active");
+      });
+
+      function handleScroll() {
+        const currentScroll = window.scrollY;
+
+        if (currentScroll > 50) {
+          navbar.classList.add("scrolled");
+        } else {
+          navbar.classList.remove("scrolled");
+        }
+
+        const threshold = 200;
+        if (currentScroll > lastScrollTop && currentScroll > threshold) {
+          topbar.classList.add("hidden");
+        } else if (currentScroll < lastScrollTop && currentScroll < threshold) {
+          topbar.classList.remove("hidden");
+        }
+
+        lastScrollTop = currentScroll <= 0 ? 0 : currentScroll;
+
+        sections.forEach((sec) => {
+          const offset = sec.offsetTop - 150;
+          const height = sec.offsetHeight;
+          const id = sec.getAttribute("id");
+
+          if (currentScroll >= offset && currentScroll < offset + height) {
+            navLinks.forEach((link) => {
+              link.classList.remove("active");
+              if (link.getAttribute("href") === `#${id}`) {
+                link.classList.add("active");
+              }
+            });
+          }
+        });
+      }
+
+      window.addEventListener("scroll", handleScroll);
+      document.addEventListener("DOMContentLoaded", handleScroll);
+    </script>
+  </body>
+</html>
